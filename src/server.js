@@ -12,6 +12,22 @@ app.get('/health', (_, res) => {
   });
 });
 
+app.get('/health/db', async (_, res) => {
+  try {
+    await pool.query('SELECT NOW()');
+
+    return res.json({
+      status: 'ok',
+      database: 'connected',
+    });
+  } catch {
+    return res.status(500).json({
+      status: 'error',
+      database: 'disconnected',
+    });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
