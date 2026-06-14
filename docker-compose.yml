@@ -1,8 +1,30 @@
 services:
   app:
     build: .
-    container_name: docker-postgres-lab
+    container_name: hello-app
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    networks:
+      - backend-network
 
   postgres:
     image: postgres:17-alpine
-    container_name: hello-dbxww
+    container_name: hello-db
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - backend-network
+
+volumes:
+  postgres_data:
+
+networks:
+  backend-network:
+    driver: bridge

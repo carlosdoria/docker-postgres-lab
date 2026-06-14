@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const pool = require('./database');
 
 const app = express();
 
@@ -20,10 +21,13 @@ app.get('/health/db', async (_, res) => {
       status: 'ok',
       database: 'connected',
     });
-  } catch {
+  } catch (error) {
+    console.error(error);
+
     return res.status(500).json({
       status: 'error',
       database: 'disconnected',
+      message: error.message,
     });
   }
 });
